@@ -1,4 +1,5 @@
 #include<iostream>
+#include<ctype.h>
 using namespace std;
 
 bool is_alpha(char ch);
@@ -10,9 +11,7 @@ bool is_div(char ch);
 bool is_mul(char ch);
 bool is_equal(char ch);
 bool is_greater(char ch);
-
 bool is_less(char ch);
-
 bool is_colon(char ch);
 bool is_qmark(char ch);
 void lexical(string str);
@@ -33,7 +32,7 @@ bool is_letter(char ch){
     return false;
 }
 bool is_digit(char ch){
-    if(ch>=0 && ch<=9)
+    if(ch>='0' && ch<='9')
     return true;
     else
     return false;
@@ -112,10 +111,9 @@ void lexical(string str){
     int state=0;
     int i;
     char c='\0';
-    int flag=1;
     string lexem;
     while(str[i]!='\0'){
-        flag=1;
+        int flag=1;
         c=str[i];
         switch(state)
         {
@@ -127,26 +125,30 @@ void lexical(string str){
                    else if(is_plus(c)){
                        state=0;
                        lexem=c;
-                       cout<<"Token ====> <"<<"Addition,  "<<lexem<<endl;
+                       cout<<"Token ====> <"<<"Addition,  "<<lexem<<" >"<<endl;
                        lexem="";
+                       flag=0;
                    }
                    else if(is_minus(c)){
                        state=0;
                        lexem=c;
-                       cout<<"Token ====> <"<<"Subtract,  "<<lexem<<endl;
+                       cout<<"Token ====> <"<<"Subtract,  "<<lexem<<" >"<<endl;
                        lexem="";
+                       flag=0;
                    }
                    else if(is_div(c)){
                        state=0;
                        lexem=c;
-                       cout<<"Token ====> <"<<"Divide,  "<<lexem<<endl;
+                       cout<<"Token ====> <"<<"Divide,  "<<lexem<<" >"<<endl;
                        lexem="";
+                       flag=0;
                    }
                    else if(is_mul(c)){
                        state=0;
                        lexem=c;
-                       cout<<"Token ====> <"<<"Multilication,  "<<lexem<<endl;
+                       cout<<"Token ====> <"<<"Multilication,  "<<lexem<<" >"<<endl;
                        lexem="";
+                       flag=0;
                    }
                    else if(is_letter(c)){
                        state=9;
@@ -156,6 +158,11 @@ void lexical(string str){
                    else if(is_less(c)){
                        state=11;
                        
+                   }
+                   else if(isspace(c))
+                   {
+                       state=0;
+                       flag=0;
                    }
                    else if(is_greater(c)){
                        state=14;
@@ -167,12 +174,15 @@ void lexical(string str){
                    }
                    else if(is_digit(c)){
                        state=17;
+                       lexem=lexem+c;
                        
+                       cout<<"Token====> <Constant, "<<lexem<<" >"<<endl;
+                       flag=0; 
                    }
                    else if(is_colon(c)){
                        state=0;
                        lexem=c;
-                       cout<<"Token ====> <"<<"Idendation,  "<<lexem<<endl;
+                       cout<<"Token ====> <"<<"Idendation,  "<<lexem<<" >"<<endl;
                        lexem="";
 
                         }
@@ -182,7 +192,7 @@ void lexical(string str){
                    else
                    {
                        cout<<"Invalid Token"<<endl;
-                       break;
+                       
                    }
 
                    break;
@@ -199,9 +209,9 @@ void lexical(string str){
                    {
                        state=0;
                        lexem=lexem+c;
-                       cout<<"Token ====> <"<<"Identifier,  "<<lexem<<endl;
+                       cout<<"Token ====> <"<<"Identifier,  "<<lexem<<" >"<<endl;
                        lexem="";
-                       
+                       flag=0;
                    }
                    else if(is_digit(c)||is_letter(c))
                    {
@@ -218,14 +228,14 @@ void lexical(string str){
                    case 9:
                          if(is_letter(c))
                          {   
-                             
+                             flag=0;
                               lexem=lexem+c;
                              if(lexem =="num"||lexem=="though"||lexem=="single"||lexem=="bool"||lexem=="switch"||lexem=="cord"||lexem=="main"||lexem=="box")
                              {
                                  state=0;
-                                 cout<<"Token ====> <"<<"Keyword,  "<<lexem<<endl;
+                                 cout<<"Token ====> <"<<"Keyword,  "<<lexem<<" >"<<endl;
                                  lexem="";
-                                 flag=1;
+                                 
                              }
                         
                          }
@@ -235,7 +245,7 @@ void lexical(string str){
                           {
                               state=0;
                               lexem=lexem+c;
-                              cout<<"Token ====> <"<<"Lequal,  "<<lexem<<endl;
+                              cout<<"Token ====> <"<<"Lequal,  "<<lexem<<" >"<<endl;
                               lexem="";
                            }
                           else
@@ -258,8 +268,27 @@ void lexical(string str){
                           {
                               state=0;
                                cout<<"Token ====> <"<<"Less,  "<<lexem<<endl;
-                             lexem="";
+                               lexem="";
                              continue;
+                          }
+                          
+                          break;
+                          case 17:
+                        
+                          if(is_digit(c)){
+
+                          }
+                          else if(isspace(c)||is_colon(c)){
+                              state=0;
+                              lexem=lexem+c;
+                               cout<<"Token ====> <"<<"Constant,  "<<lexem<<" >"<<endl;
+                               lexem="";
+                               continue;
+                          }
+                          else{
+                              state=0;
+                              cout<<"contstant terminator are : and space"<<endl;
+
                           }
                           
                           break;
@@ -275,9 +304,9 @@ void lexical(string str){
                           else
                           {
                              state=0;
-                               cout<<"Token ====> <"<<"Equal,  "<<lexem<<endl;
+                               cout<<"Token ====> <"<<"Equal,  "<<lexem<<">"<<endl;
                                lexem="";
-                               flag=1;
+                               
                              continue;
                           }
                           break;     
